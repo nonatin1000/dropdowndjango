@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    label {
+        padding: 10px;
+    }
+</style>
+
+<div class="jumbotron">
+    <div class="container">
+        <h2>Exemplo do uso de um filtro com dropdowns dependentes.</h2>
+        <p><i>Segundo choice filtrado a partir do primeiro choice.</i></p>
+        <p><a href="https://simpleisbetterthancomplex.com/tutorial/2018/01/29/how-to-implement-dependent-or-chained-dropdown-list-with-django.html" target="_blank">How to Implement Dependent/Chained Dropdown List with Django</a></p>
+
+        <h2>Person List</h2>
+        <table class="table table-hover table-condensed table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data de Nascimento</th>
+                    <th>País</th>
+                    <th>Cidade</th>
+                    <th style="width: 21%;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in object_list %}
+                <tr>
+                    <td>{{ person.name }}</td>
+                    <td>{{ person.birthdate }}</td>
+                    <td>{{ person.country.name }}</td>
+                    <td>{{ person.city.name }}</td>
+                    <td>
+                        <a href="#modal-id-{{ person.id }}" class="btn btn-info btn-xs" title="Remover" data-toggle="modal">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'core:person_change' person.id %}" class="btn btn-warning btn-xs" title="Editar">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-xs deleteItem" title="Remover" data-toggle="modal" data-id="{{ person.id }}">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+    label {
+        padding: 10px;
+    }
+</style>
+
+<div class="jumbotron">
+    <div class="container">
+        <h2>Exemplo do uso de um filtro com dropdowns dependentes.</h2>
+        <p><i>Segundo choice filtrado a partir do primeiro choice.</i></p>
+        <p><a href="https://simpleisbetterthancomplex.com/tutorial/2018/01/29/how-to-implement-dependent-or-chained-dropdown-list-with-django.html" target="_blank">How to Implement Dependent/Chained Dropdown List with Django</a></p>
+        <h2>Person Form</h2>
+        <form method="post" id="personForm" data-cities-url="{% url 'core:ajax_load_cities' %}" novalidate>{% csrf_token %}
+            <div class="box-body">
+                {% for field in form %}
+                {% if field.errors %}
+                <div class="form-group error" >
+                    <label class="control-label" >{{ field.label }}</label>
+                    {{ field|add_class:"form-control input-md" }}
+                    {% for error in field.errors%}
+                    <span class="help-inline error">{{ error}}</span>
+                    {% endfor%}
+                </div>
+                {%else%}
+                <div class="form-group">
+                    <label class="control-label" >{{ field.label }}</label>
+                    {{ field|add_class:"form-control input-md" }}
+                </div>
+                {%endif%}
+                {% endfor %}
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-success" style="font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i> Salvar </button>
+                    <a class="btn btn-danger pull-right" href="{% url 'core:person_changelist' %}" style="font-weight: bold;"><i class="fa fa-times" aria-hidden="true"></i> Cancelar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $('#id_country').change(function(){
+        let url = $('#personForm').attr('data-cities-url'); // get the url of the `load_cities` view
+        let countryId = $(this).val(); // get the selected country ID from the HTML input
+
+        $.ajax({   // initialize an AJAX request
+            url: url, // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+            data: {
+                'country': countryId, // add the country id to the GET parameters
+            },
+            success: function(data){  // `data` is the return of the `load_cities` view function
+                $('#id_city').html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+    });
+</script>
+{% endblock %}
